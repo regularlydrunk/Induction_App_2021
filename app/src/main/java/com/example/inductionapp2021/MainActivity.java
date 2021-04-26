@@ -2,6 +2,8 @@ package com.example.inductionapp2021;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.DateUtils;
@@ -58,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     FirebaseAuth mAuth;
     FirebaseUser mUser;
-    DatabaseReference mUserRef, postRef;
+    DatabaseReference mUserRef, postRef,likeRef;
     String profileImageUrlV, usernameV;
     CircleImageView profileImageView;
     TextView usernameHeader;
@@ -99,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mUser = mAuth.getCurrentUser();
         mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
         postRef = FirebaseDatabase.getInstance().getReference().child("Posts");
+        likeRef = FirebaseDatabase.getInstance().getReference().child("Likes");
 
         postImageRef = FirebaseStorage.getInstance().getReference().child("PostImages");
 
@@ -138,12 +141,42 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         adapter = new FirebaseRecyclerAdapter<Posts, MyViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull MyViewHolder holder, int position, @NonNull Posts model) {
+                String postKey = getRef(position).getKey();
                 holder.postDesc.setText(model.getStatusDescription());
                 String timeAgo = calculateTimeAgo(model.getDate());
                 holder.timeAgo.setText(timeAgo);
                 holder.username.setText(model.getUsername());
                 Picasso.get().load(model.getPostImageURL()).into(holder.postImage);
                 Picasso.get().load(model.getUserProfileImage()).into(holder.profileImagePost);
+
+                holder.imgLike.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        likeRef.child(postKey).child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()){
+                                    likeRef.child(postKey).child(mUser.getUid()).removeValue();
+                                    holder.imgLike.setColorFilter(Color.parseColor("#636869"), PorterDuff.Mode.MULTIPLY); //Changes colour of like image
+                                    notifyDataSetChanged();
+                                }
+                                else
+                                {
+                                    likeRef.child(postKey).child(mUser.getUid()).setValue("Like");
+                                    holder.imgLike.setColorFilter(Color.parseColor("#e3a919"), PorterDuff.Mode.MULTIPLY); //Changes colour of like image
+                                    notifyDataSetChanged();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                Toast.makeText(MainActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+
+                            }
+                        });
+                    }
+                });
             }
 
 
