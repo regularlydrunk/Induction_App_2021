@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Toolbar toolbar;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
-    // this is a new comment
+    
     FirebaseAuth mAuth;
     FirebaseUser mUser;
     DatabaseReference mUserRef, postRef;
