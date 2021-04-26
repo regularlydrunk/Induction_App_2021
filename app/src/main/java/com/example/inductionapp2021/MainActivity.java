@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     FirebaseAuth mAuth;
     FirebaseUser mUser;
-    DatabaseReference mUserRef, postRef,likeRef;
+    DatabaseReference mUserRef, postRef,likeRef, commentRef;
     String profileImageUrlV, usernameV;
     CircleImageView profileImageView;
     TextView usernameHeader;
@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
         postRef = FirebaseDatabase.getInstance().getReference().child("Posts");
         likeRef = FirebaseDatabase.getInstance().getReference().child("Likes");
+        commentRef = FirebaseDatabase.getInstance().getReference().child("Comments");
 
         postImageRef = FirebaseStorage.getInstance().getReference().child("PostImages");
 
@@ -178,6 +179,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         });
                     }
                 });
+
+                holder.sendComment.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String comment = holder.inputComments.getText().toString();
+                        if (comment.isEmpty()){
+                            Toast.makeText(MainActivity.this, "You can't comment nothing!", Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            AddComment(holder, postKey, commentRef, mUser.getUid(), comment);
+
+                        }
+                    }
+                });
+
             }
 
 
@@ -190,6 +207,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         };
         adapter.startListening();
         recyclerView.setAdapter(adapter);
+    }
+
+    private void AddComment(MyViewHolder holder, String postKey, DatabaseReference commentRef, String uid, String comment) {
+        HashMap hashMap = new HashMap();
+        hashMap.put("userID",uid);
+        hashMap.put("username",usernameV);
+        hashMap.put("profileImageUrl", profileImageUrlV);
+        hashMap.put("comment", comment);
+
+        commentRef.child(postKey).child(uid).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
+            @Override
+            public void onComplete(@NonNull Task task) {
+                if (task.isSuccessful())
+                {
+                    Toast.makeText(MainActivity.this, "Comment Added", Toast.LENGTH_SHORT).show();
+                    adapter.notifyDataSetChanged();
+                    holder.inputComments.setText(null);
+                }
+                else
+                {
+                    Toast.makeText(MainActivity.this, ""+task.getException().toString(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 
