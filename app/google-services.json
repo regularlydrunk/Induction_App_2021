@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1045015893364",
+    "firebase_url": "https://induction-app-2021-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "induction-app-2021",
+    "storage_bucket": "induction-app-2021.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1045015893364:android:0a74c98170501541734821",
+        "android_client_info": {
+          "package_name": "com.example.inductionapp2021"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1045015893364-81l8uoop9kadn2dleqko5605d8p85t13.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtOwtgPYESmsbvRelDebTImfaL_2Lxq_0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1045015893364-81l8uoop9kadn2dleqko5605d8p85t13.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
