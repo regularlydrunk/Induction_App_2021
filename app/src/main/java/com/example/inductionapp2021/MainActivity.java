@@ -25,6 +25,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.inductionapp2021.Utils.Comment;
 import com.example.inductionapp2021.Utils.Posts;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -73,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FirebaseRecyclerAdapter<Posts,MyViewHolder>adapter;
     FirebaseRecyclerOptions<Posts> options;
     RecyclerView recyclerView;
+    FirebaseRecyclerOptions<Comment>commentOption;
+    FirebaseRecyclerAdapter<Comment, CommentViewHolder> commentAdapter;
 
 
 
@@ -151,49 +154,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Picasso.get().load(model.getUserProfileImage()).into(holder.profileImagePost);
                 holder.countLikes(postKey, mUser.getUid(), likeRef);
 
-                holder.imgLike.setOnClickListener(new View.OnClickListener() {
+                holder.imgLike.setOnClickListener(view -> likeRef.child(postKey).child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onClick(View view) {
-                        likeRef.child(postKey).child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                if (snapshot.exists()){
-                                    likeRef.child(postKey).child(mUser.getUid()).removeValue();
-                                    holder.imgLike.setColorFilter(Color.parseColor("#636869"), PorterDuff.Mode.MULTIPLY); //Changes colour of like image
-                                    notifyDataSetChanged();
-                                }
-                                else
-                                {
-                                    likeRef.child(postKey).child(mUser.getUid()).setValue("Like");
-                                    holder.imgLike.setColorFilter(Color.parseColor("#e3a919"), PorterDuff.Mode.MULTIPLY); //Changes colour of like image
-                                    notifyDataSetChanged();
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                                Toast.makeText(MainActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
-
-                            }
-                        });
-                    }
-                });
-
-                holder.sendComment.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String comment = holder.inputComments.getText().toString();
-                        if (comment.isEmpty()){
-                            Toast.makeText(MainActivity.this, "You can't comment nothing!", Toast.LENGTH_SHORT).show();
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()){
+                            likeRef.child(postKey).child(mUser.getUid()).removeValue();
+                            holder.imgLike.setColorFilter(Color.parseColor("#636869"), PorterDuff.Mode.MULTIPLY); //Changes colour of like image
+                            notifyDataSetChanged();
                         }
                         else
                         {
-                            AddComment(holder, postKey, commentRef, mUser.getUid(), comment);
-
+                            likeRef.child(postKey).child(mUser.getUid()).setValue("Like");
+                            holder.imgLike.setColorFilter(Color.parseColor("#e3a919"), PorterDuff.Mode.MULTIPLY); //Changes colour of like image
+                            notifyDataSetChanged();
                         }
                     }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                        Toast.makeText(MainActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+                }));
+
+                holder.sendComment.setOnClickListener(view -> {
+                    String comment = holder.inputComments.getText().toString();
+                    if (comment.isEmpty()){
+                        Toast.makeText(MainActivity.this, "You can't comment nothing!", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        AddComment(holder, postKey, commentRef, mUser.getUid(), comment);
+
+                    }
                 });
+                
+                LoadComments(postKey);
 
             }
 
@@ -209,9 +206,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         recyclerView.setAdapter(adapter);
     }
 
+    private void LoadComments(String postKey) {
+        MyViewHolder.recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+
+        commentOption = new FirebaseRecyclerOptions.Builder<Comment>().setQuery(commentRef.child(postKey), Comment.class).build();
+        commentAdapter = new FirebaseRecyclerAdapter<Comment, CommentViewHolder>(commentOption) {
+            @Override
+            protected void onBindViewHolder(@NonNull CommentViewHolder holder, int position, @NonNull Comment model) {
+                Picasso.get().load(model.getProfileImageUrl()).into(holder.profileImage);
+                holder.username.setText(model.getUsername());
+                holder.comment.setText(model.getComment());
+            }
+
+            @NonNull
+            @Override
+            public CommentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_view_comment, parent, false);
+                return new CommentViewHolder(view);
+            }
+        };
+        commentAdapter.startListening();
+        MyViewHolder.recyclerView.setAdapter(commentAdapter);
+
+    }
+
     private void AddComment(MyViewHolder holder, String postKey, DatabaseReference commentRef, String uid, String comment) {
         HashMap hashMap = new HashMap();
-        hashMap.put("userID",uid);
         hashMap.put("username",usernameV);
         hashMap.put("profileImageUrl", profileImageUrlV);
         hashMap.put("comment", comment);
