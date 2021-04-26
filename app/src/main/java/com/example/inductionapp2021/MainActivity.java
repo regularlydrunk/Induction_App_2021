@@ -4,8 +4,10 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,7 +19,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.inductionapp2021.Utils.Posts;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -46,24 +53,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Toolbar toolbar;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
-
     FirebaseAuth mAuth;
     FirebaseUser mUser;
     DatabaseReference mUserRef, postRef;
-
     String profileImageUrlV, usernameV;
-
     CircleImageView profileImageView;
     TextView usernameHeader;
-
     ImageView addImagePost, sendPostImage;
     EditText inputStatusDescription;
-
     Uri imageUri;
-
     ProgressDialog mLoadingBar;
-
     StorageReference postImageRef;
+
+    FirebaseRecyclerAdapter<Posts,MyViewHolder>adapter;
+    FirebaseRecyclerOptions<Posts> options;
+    RecyclerView recyclerView;
+
 
 
     @Override
@@ -80,6 +85,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         sendPostImage = findViewById(R.id.sendPostImage);
         inputStatusDescription = findViewById(R.id.inputAddPost);
         mLoadingBar = new ProgressDialog(this);
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
 
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navView);
@@ -95,9 +103,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         profileImageView = view.findViewById(R.id.profile_image_header);
         usernameHeader = view.findViewById(R.id.username_header);
-
         navigationView.setNavigationItemSelectedListener(this);
-
 
         //POST STATUS BUTTON
         sendPostImage.setOnClickListener(new View.OnClickListener() {
@@ -106,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 AddPost();
             }
         });
+
 
 
         //LOAD IMAGE FROM LIBRARY WHEN UPLOADING
@@ -119,6 +126,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
+        LoadPosts();
+
+    }
+
+    private void LoadPosts() {
+        options = new FirebaseRecyclerOptions.Builder<Posts>().setQuery(postRef, Posts.class).build();
+        adapter = new FirebaseRecyclerAdapter<Posts, MyViewHolder>(options) {
+            @Override
+            protected void onBindViewHolder(@NonNull MyViewHolder holder, int position, @NonNull Posts model) {
+                holder.postDesc.setText(model.getStatusDescription());
+                holder.timeAgo.setText(model.getDate());
+                holder.username.setText(model.getUsername());
+                Picasso.get().load(model.getPostImageURL()).into(holder.postImage);
+                Picasso.get().load(model.getUserProfileImage()).into(holder.profileImagePost);
+            }
+
+
+            @NonNull
+            @Override
+            public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_view_post, parent, false);
+                return new MyViewHolder(view);
+            }
+        };
+        adapter.startListening();
+        recyclerView.setAdapter(adapter);
     }
 
 
@@ -153,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //Date Formatter
             Date date = new Date();
             SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
-            String strDate = formatter.format(date);
+            final String strDate = formatter.format(date);
 
             //Uploading Post To Database
             postImageRef.child(mUser.getUid()+ strDate).putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {

@@ -2,42 +2,41 @@ package com.example.inductionapp2021.Utils;
 
 public class Posts {
 
-    private String datePost, postDesc, postImageUrl, userProfileImage, username;
+    private String date, statusDescription, postImageURL, userProfileImage, username;
 
     public Posts() {
-
     }
 
-    public Posts(String datePost, String postDesc, String postImageUrl, String userProfileImage, String username) {
-        this.datePost = datePost;
-        this.postDesc = postDesc;
-        this.postImageUrl = postImageUrl;
+    public Posts(String date, String statusDescription, String postImageURL, String userProfileImage, String username) {
+        this.date = date;
+        this.statusDescription = statusDescription;
+        this.postImageURL = postImageURL;
         this.userProfileImage = userProfileImage;
         this.username = username;
     }
 
-    public String getDatePost() {
-        return datePost;
+    public String getDate() {
+        return date;
     }
 
-    public void setDatePost(String datePost) {
-        this.datePost = datePost;
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public String getPostDesc() {
-        return postDesc;
+    public String getStatusDescription() {
+        return statusDescription;
     }
 
-    public void setPostDesc(String postDesc) {
-        this.postDesc = postDesc;
+    public void setStatusDescription(String statusDescription) {
+        this.statusDescription = statusDescription;
     }
 
-    public String getPostImageUrl() {
-        return postImageUrl;
+    public String getPostImageURL() {
+        return postImageURL;
     }
 
-    public void setPostImageUrl(String postImageUrl) {
-        this.postImageUrl = postImageUrl;
+    public void setPostImageURL(String postImageURL) {
+        this.postImageURL = postImageURL;
     }
 
     public String getUserProfileImage() {
