@@ -13,7 +13,9 @@
         <activity android:name=".SetupActivity"/>
 
 
-        <activity android:name=".RegisterActivity">
+        <activity android:name=".RegisterActivity"/>
+
+        <activity android:name=".MainActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,7 +23,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity" />
 
 
         <activity android:name=".LoginActivity" />

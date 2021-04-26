@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     Toolbar toolbar;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
-    
+
     FirebaseAuth mAuth;
     FirebaseUser mUser;
     DatabaseReference mUserRef, postRef;
@@ -156,11 +156,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             String strDate = formatter.format(date);
 
             //Uploading Post To Database
-            postImageRef.child(mUser.getUid()).putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            postImageRef.child(mUser.getUid()+ strDate).putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                     if (task.isSuccessful()) {
-                        postImageRef.child(mUser.getUid()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        postImageRef.child(mUser.getUid()+ strDate).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
 
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 hashMap.put("username", usernameV);
 
 
-                                postRef.child(mUser.getUid()).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
+                                postRef.child(mUser.getUid()+ strDate).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
                                     @Override
                                     public void onComplete(@NonNull Task task) {
                                         if (task.isSuccessful()) {
