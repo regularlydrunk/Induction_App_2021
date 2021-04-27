@@ -5,7 +5,7 @@ All data from this application is stored on a personal Firebase accoount. <br/>
 
 
 # 🧰 Setup notes
-All dependancies are added into the gradle set up so to set up all is needed is to clone to respo and then run on android emulator via android studio.
+All dependancies are added into the gradle. All that is needed to run this application is to clone the resporitory and then run on Andriod Emulator via Android Studio.
 
 # 🛠️ Dependancies Used
 * Firebase UI Database <br/>
