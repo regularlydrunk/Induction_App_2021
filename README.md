@@ -1,4 +1,4 @@
-# Induction_App_2021
+# Make Me University Ready (MMUR) Induction Application
 This is an induction instagram-like application souly for university students at Manchester Metropolitan University.<br/>
 Users are reuqired to sign up with a MMU email else sign up fails. <br/>
 All data from this application is stored on a personal Firebase accoount. <br/>
