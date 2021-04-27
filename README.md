@@ -14,3 +14,4 @@ All dependancies are added into the gradle. All that is needed to run this appli
 * Circle Image View <br/>
 * Picasso <br/>
 
+#❓ Future Improvements
