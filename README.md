@@ -7,6 +7,7 @@ All data from this application is stored on a personal Firebase accoount. <br/>
 # 🧰 Setup notes
 All dependancies are added into the gradle. All that is needed to run this application is to clone the resporitory and then run on Andriod Emulator via Android Studio.
 
+
 # 🛠️ Dependancies Used
 * Firebase UI Database <br/>
 * Firebase Storage <br/>
@@ -14,4 +15,5 @@ All dependancies are added into the gradle. All that is needed to run this appli
 * Circle Image View <br/>
 * Picasso <br/>
 
-#❓ Future Improvements
+
+# ❓ Future Improvements
