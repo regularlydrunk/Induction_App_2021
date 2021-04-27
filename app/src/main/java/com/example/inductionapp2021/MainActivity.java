@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Picasso.get().load(model.getPostImageURL()).into(holder.postImage);
                 Picasso.get().load(model.getUserProfileImage()).into(holder.profileImagePost);
                 holder.countLikes(postKey, mUser.getUid(), likeRef);
+                holder.countComments(postKey, mUser.getUid(), commentRef);
 
                 holder.imgLike.setOnClickListener(view -> likeRef.child(postKey).child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override

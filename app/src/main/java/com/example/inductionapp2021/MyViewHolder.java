@@ -81,4 +81,25 @@ public class MyViewHolder extends RecyclerView.ViewHolder {
             }
         });
     }
+
+    public void countComments(String postKey, String uid, DatabaseReference commentRef) {
+        commentRef.child(postKey).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    int totalComments = (int) snapshot.getChildrenCount();
+                    commentCount.setText(totalComments + "");
+                }
+                else {
+                    commentCount.setText("0");
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
 }
