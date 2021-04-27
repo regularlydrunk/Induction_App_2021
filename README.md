@@ -8,9 +8,9 @@ All data from this application is stored on a personal Firebase accoount. <br/>
 All dependancies are added into the gradle set up so to set up all is needed is to clone to respo and then run on android emulator via android studio.
 
 # 🛠️ Dependancies Used
-*Firebase UI Database <br/>
-*Firebase Storage <br/>
-*Firebase Auth <br/>
-*Circle Image View <br/>
-*Picasso <br/>
+* Firebase UI Database <br/>
+* Firebase Storage <br/>
+* Firebase Auth <br/>
+* Circle Image View <br/>
+* Picasso <br/>
 
