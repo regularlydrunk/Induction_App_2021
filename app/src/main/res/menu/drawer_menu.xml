@@ -19,7 +19,7 @@
         <item
             android:id="@+id/findFriend"
             android:icon="@drawable/ic_find_friend"
-            android:title="Find Friens" />
+            android:title="Find Friends" />
 
         <item
             android:id="@+id/chat"
