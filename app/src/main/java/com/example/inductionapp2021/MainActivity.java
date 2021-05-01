@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView navigationView;
     FirebaseAuth mAuth;
     FirebaseUser mUser;
-    DatabaseReference mUserRef, postRef,likeRef, commentRef;
+    DatabaseReference mUserRef, postRef, likeRef, commentRef;
     String profileImageUrlV, usernameV;
     CircleImageView profileImageView;
     TextView usernameHeader;
@@ -71,12 +71,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ProgressDialog mLoadingBar;
     StorageReference postImageRef;
 
-    FirebaseRecyclerAdapter<Posts,MyViewHolder>adapter;
+    FirebaseRecyclerAdapter<Posts, MyViewHolder> adapter;
     FirebaseRecyclerOptions<Posts> options;
     RecyclerView recyclerView;
-    FirebaseRecyclerOptions<Comment>commentOption;
+    FirebaseRecyclerOptions<Comment> commentOption;
     FirebaseRecyclerAdapter<Comment, CommentViewHolder> commentAdapter;
-
 
 
     @Override
@@ -124,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         });
 
 
-
         //LOAD IMAGE FROM LIBRARY WHEN UPLOADING
         addImagePost.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -158,13 +156,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 holder.imgLike.setOnClickListener(view -> likeRef.child(postKey).child(mUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if (snapshot.exists()){
+                        if (snapshot.exists()) {
                             likeRef.child(postKey).child(mUser.getUid()).removeValue();
                             holder.imgLike.setColorFilter(Color.parseColor("#636869"), PorterDuff.Mode.MULTIPLY); //Changes colour of like image
                             notifyDataSetChanged();
-                        }
-                        else
-                        {
+                        } else {
                             likeRef.child(postKey).child(mUser.getUid()).setValue("Like");
                             holder.imgLike.setColorFilter(Color.parseColor("#e3a919"), PorterDuff.Mode.MULTIPLY); //Changes colour of like image
                             notifyDataSetChanged();
@@ -174,23 +170,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
 
-                        Toast.makeText(MainActivity.this, ""+error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "" + error.getMessage(), Toast.LENGTH_SHORT).show();
 
                     }
                 }));
 
                 holder.sendComment.setOnClickListener(view -> {
                     String comment = holder.inputComments.getText().toString();
-                    if (comment.isEmpty()){
+                    if (comment.isEmpty()) {
                         Toast.makeText(MainActivity.this, "You can't comment nothing!", Toast.LENGTH_SHORT).show();
-                    }
-                    else
-                    {
+                    } else {
                         AddComment(holder, postKey, commentRef, mUser.getUid(), comment);
 
                     }
                 });
-                
+
                 LoadComments(postKey);
 
             }
@@ -233,22 +227,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void AddComment(MyViewHolder holder, String postKey, DatabaseReference commentRef, String uid, String comment) {
         HashMap hashMap = new HashMap();
-        hashMap.put("username",usernameV);
+        hashMap.put("username", usernameV);
         hashMap.put("profileImageUrl", profileImageUrlV);
         hashMap.put("comment", comment);
 
         commentRef.child(postKey).child(uid).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
             @Override
             public void onComplete(@NonNull Task task) {
-                if (task.isSuccessful())
-                {
+                if (task.isSuccessful()) {
                     Toast.makeText(MainActivity.this, "Comment Added", Toast.LENGTH_SHORT).show();
                     adapter.notifyDataSetChanged();
                     holder.inputComments.setText(null);
-                }
-                else
-                {
-                    Toast.makeText(MainActivity.this, ""+task.getException().toString(), Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "" + task.getException().toString(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -270,7 +261,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         return "";
     }
-
 
 
     @Override
@@ -300,18 +290,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mLoadingBar.show();
 
 
-
             //Date Formatter
             Date date = new Date();
             SimpleDateFormat formatter = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
             final String strDate = formatter.format(date);
 
             //Uploading Post To Database
-            postImageRef.child(mUser.getUid()+ strDate).putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+            postImageRef.child(mUser.getUid() + strDate).putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                     if (task.isSuccessful()) {
-                        postImageRef.child(mUser.getUid()+ strDate).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        postImageRef.child(mUser.getUid() + strDate).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
 
@@ -324,7 +313,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 hashMap.put("username", usernameV);
 
 
-                                postRef.child(mUser.getUid()+ strDate).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
+                                postRef.child(mUser.getUid() + strDate).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
                                     @Override
                                     public void onComplete(@NonNull Task task) {
                                         if (task.isSuccessful()) {
@@ -390,7 +379,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.profile:
-                Toast.makeText(this, "Profile", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, ProfileActivity.class));
+                Toast.makeText(this, "Loading Profile", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.friends:

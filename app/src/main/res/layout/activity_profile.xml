@@ -4,95 +4,110 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SetupActivity">
-
-    <include layout ="@layout/main_appbar"
-        android:id="@+id/app_bar"/>
+    tools:context=".ProfileActivity">
 
     <androidx.cardview.widget.CardView
+
+        android:id="@+id/cardView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="40dp"
-        app:cardCornerRadius="20dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="40dp"
+        app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/app_bar">
+        app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/profile_image"
-                android:layout_width="149dp"
-                android:layout_height="149dp"
-                android:layout_marginTop="32dp"
-                android:src="@drawable/blankpfp"
-                app:civ_border_color="#FF000000"
-                app:civ_border_width="2dp"
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:background="@color/light_blue"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/profileImageView"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/noprofilepicture"
+                app:layout_constraintBottom_toBottomOf="@+id/view"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view" />
+
             <EditText
-                android:id="@+id/inputUsername"
-                android:layout_width="wrap_content"
+                android:id="@+id/editTextTextPersonName"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
                 android:ems="10"
                 android:hint="Username"
                 android:inputType="textPersonName"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+                app:layout_constraintTop_toBottomOf="@+id/profileImageView" />
 
             <EditText
                 android:id="@+id/inputCourse"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:ems="10"
                 android:hint="Course"
                 android:inputType="textPersonName"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/inputUsername" />
+                app:layout_constraintEnd_toEndOf="@+id/editTextTextPersonName"
+                app:layout_constraintStart_toStartOf="@+id/editTextTextPersonName"
+                app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName" />
 
             <EditText
-                android:id="@+id/inputAccomodation"
-                android:layout_width="wrap_content"
+                android:id="@+id/inputAccommodation"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:ems="10"
-                android:hint="Accomodation"
+                android:hint="Accommodation"
                 android:inputType="textPersonName"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/inputCourse"
+                app:layout_constraintStart_toStartOf="@+id/inputCourse"
                 app:layout_constraintTop_toBottomOf="@+id/inputCourse" />
 
             <EditText
                 android:id="@+id/inputCampus"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:ems="10"
                 android:hint="Campus"
                 android:inputType="textPersonName"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/inputAccomodation" />
+                app:layout_constraintEnd_toEndOf="@+id/inputAccommodation"
+                app:layout_constraintStart_toStartOf="@+id/inputAccommodation"
+                app:layout_constraintTop_toBottomOf="@+id/inputAccommodation" />
 
             <Button
-                android:id="@+id/btnSave"
+                android:id="@+id/btnUpdate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Save"
+                android:layout_marginTop="16dp"
+                android:text="Button"
                 app:layout_constraintEnd_toEndOf="@+id/inputCampus"
                 app:layout_constraintStart_toStartOf="@+id/inputCampus"
                 app:layout_constraintTop_toBottomOf="@+id/inputCampus" />
 
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>
