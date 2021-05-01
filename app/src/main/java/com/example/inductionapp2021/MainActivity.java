@@ -380,7 +380,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.profile:
                 startActivity(new Intent(MainActivity.this, ProfileActivity.class));
-                Toast.makeText(this, "Loading Profile", Toast.LENGTH_SHORT).show();
                 break;
 
             case R.id.friends:
@@ -388,7 +387,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.findFriend:
-                Toast.makeText(this, "Find Friends", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, FindFriendActivity.class));
+
                 break;
 
             case R.id.chat:
