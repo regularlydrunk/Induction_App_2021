@@ -9,8 +9,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.DownloadManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import com.example.inductionapp2021.Utils.Users;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -62,10 +65,21 @@ public class FindFriendActivity extends AppCompatActivity {
         adapter = new FirebaseRecyclerAdapter<Users, FindFriendViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull FindFriendViewHolder holder, int position, @NonNull Users model) {
-                Picasso.get().load(model.getProfileImage()).into(holder.profileImage);
-                holder.username.setText(model.getUsername());
-                holder.course.setText(model.getCourse());
-            }
+                if (!mUser.getUid().equals(getRef(position).getKey().toString())){
+
+                    // IF THE USER DOESNT MATCH THE UID OF THE USER LOGGED IN THEN SHOW THE DATA
+                    Picasso.get().load(model.getProfileImage()).into(holder.profileImage);
+                    holder.username.setText(model.getUsername());
+                    holder.course.setText(model.getCourse());
+                }
+                else
+                {
+                    //ELSE HIDE THE USER FROM THE LIST
+                    holder.itemView.setVisibility(View.GONE);
+                    holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0 ));
+                }
+                }
+
 
             @NonNull
             @Override
@@ -78,5 +92,26 @@ public class FindFriendActivity extends AppCompatActivity {
         adapter.startListening();
         recyclerView.setAdapter(adapter);
 
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.search_menu,menu);
+        MenuItem menuItem = menu.findItem(R.id.search);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                LoadUsers(s);
+                return false;
+            }
+        });
+        return true;
     }
 }
