@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.DownloadManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,8 +28,8 @@ import com.squareup.picasso.Picasso;
 
 public class FindFriendActivity extends AppCompatActivity {
 
-    FirebaseRecyclerOptions<Users>options;
-    FirebaseRecyclerAdapter<Users, FindFriendViewHolder>adapter;
+    FirebaseRecyclerOptions<Users> options;
+    FirebaseRecyclerAdapter<Users, FindFriendViewHolder> adapter;
     Toolbar toolbar;
 
     DatabaseReference mUserRef;
@@ -37,22 +38,20 @@ public class FindFriendActivity extends AppCompatActivity {
     RecyclerView recyclerView;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_friend);
 
-        toolbar= findViewById(R.id.app_bar);
+        toolbar = findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Find Friends");
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mUserRef= FirebaseDatabase.getInstance().getReference().child("Users");
+        mUserRef = FirebaseDatabase.getInstance().getReference().child("Users");
         mAuth = FirebaseAuth.getInstance();
         mUser = mAuth.getCurrentUser();
-
 
 
         LoadUsers("");
@@ -60,31 +59,39 @@ public class FindFriendActivity extends AppCompatActivity {
     }
 
     private void LoadUsers(String s) {
-        Query query = mUserRef.orderByChild("username").startAt(s).endAt(s+"\uf8ff");
+        Query query = mUserRef.orderByChild("username").startAt(s).endAt(s + "\uf8ff");
         options = new FirebaseRecyclerOptions.Builder<Users>().setQuery(query, Users.class).build();
         adapter = new FirebaseRecyclerAdapter<Users, FindFriendViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull FindFriendViewHolder holder, int position, @NonNull Users model) {
-                if (!mUser.getUid().equals(getRef(position).getKey().toString())){
+                if (!mUser.getUid().equals(getRef(position).getKey().toString())) {
 
                     // IF THE USER DOESNT MATCH THE UID OF THE USER LOGGED IN THEN SHOW THE DATA
                     Picasso.get().load(model.getProfileImage()).into(holder.profileImage);
                     holder.username.setText(model.getUsername());
                     holder.course.setText(model.getCourse());
-                }
-                else
-                {
+                } else {
                     //ELSE HIDE THE USER FROM THE LIST
                     holder.itemView.setVisibility(View.GONE);
-                    holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0 ));
+                    holder.itemView.setLayoutParams(new RecyclerView.LayoutParams(0, 0));
                 }
-                }
+
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(FindFriendActivity.this, ViewFriendActivity.class);
+                        intent.putExtra("userKey", getRef(position).getKey().toString());
+                        startActivity(intent);
+
+                    }
+                });
+            }
 
 
             @NonNull
             @Override
             public FindFriendViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_view_find_friend, parent , false );
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.single_view_find_friend, parent, false);
 
                 return new FindFriendViewHolder(view);
             }
@@ -96,7 +103,7 @@ public class FindFriendActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.search_menu,menu);
+        getMenuInflater().inflate(R.menu.search_menu, menu);
         MenuItem menuItem = menu.findItem(R.id.search);
         SearchView searchView = (SearchView) menuItem.getActionView();
 
