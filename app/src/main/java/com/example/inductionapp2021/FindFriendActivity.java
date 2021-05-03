@@ -66,7 +66,7 @@ public class FindFriendActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull FindFriendViewHolder holder, int position, @NonNull Users model) {
                 if (!mUser.getUid().equals(getRef(position).getKey().toString())) {
 
-                    // IF THE USER DOESNT MATCH THE UID OF THE USER LOGGED IN THEN SHOW THE DATA
+                    // IF THE USER DOESN'T MATCH THE UID OF THE USER LOGGED IN THEN SHOW THE DATA
                     Picasso.get().load(model.getProfileImage()).into(holder.profileImage);
                     holder.username.setText(model.getUsername());
                     holder.course.setText(model.getCourse());

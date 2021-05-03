@@ -59,13 +59,145 @@ public class ViewFriendActivity extends AppCompatActivity {
 
         LoadUser();
 
-        btnPerform.setOnClickListener(new View.OnClickListener() {
+        btnPerform.setOnClickListener(view -> PerformAction(userID));
+
+        CheckUserExistence(userID);
+
+        btnDecline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PerformAction(userID);
+                Toast.makeText(ViewFriendActivity.this, "Pressed", Toast.LENGTH_SHORT).show();
+                Unfriend(userID);
             }
         });
 
+    }
+
+    private void Unfriend(String userID) {
+        if (CurrentState.equals("friends")) {
+
+            friendRef.child(userID).child(mUser.getUid()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if (task.isSuccessful()) {
+                        friendRef.child(mUser.getUid()).child(userID).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Toast.makeText(ViewFriendActivity.this, "User Unfriended", Toast.LENGTH_SHORT).show();
+                                    CurrentState = "nothing_happened";
+                                    btnPerform.setText("Send Request");
+                                    btnDecline.setVisibility(View.GONE);
+                                    btnPerform.setVisibility(View.GONE);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        if (CurrentState.equals("they_sent_pending")) {
+            HashMap hashMap = new HashMap();
+            hashMap.put("status", "decline");
+            requestRef.child(userID).child(mUser.getUid()).updateChildren(hashMap).addOnCompleteListener(new OnCompleteListener() {
+                @Override
+                public void onComplete(@NonNull Task task) {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(ViewFriendActivity.this, "Request Declined", Toast.LENGTH_SHORT).show();
+                        CurrentState = "they_sent_decline";
+                        btnDecline.setVisibility(View.GONE);
+                        btnPerform.setText("Send Request");
+                    }
+                }
+            });
+        }
+    }
+
+    private void CheckUserExistence(String userID) {
+        friendRef.child(mUser.getUid()).child(userID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    CurrentState = "friend";
+                    btnPerform.setText("Send Message");
+                    btnDecline.setVisibility(View.VISIBLE);
+                    btnDecline.setText("Remove Friend");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        //CHECKS TO SEE IF USER IF ALREADY FRIENDS
+        friendRef.child(userID).child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    CurrentState = "friend";
+                    btnPerform.setText("Send Message");
+                    btnDecline.setVisibility(View.VISIBLE);
+                    btnDecline.setText("Remove Friend");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        //CHECKS TO SEE IF USER SENT FRIEND REQUEST IN PAST
+        requestRef.child(mUser.getUid()).child(userID).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    if (snapshot.child("status").getValue().toString().equals("pending")) {
+                        CurrentState = "I_sent_pending";
+                        btnPerform.setText("Cancel Request");
+                        btnDecline.setVisibility(View.GONE);
+                    }
+                    if (snapshot.child("status").getValue().toString().equals("decline")) {
+                        CurrentState = "I_sent_decline";
+                        btnPerform.setText("Cancel Request");
+                        btnDecline.setVisibility(View.GONE);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        //CHECKS IF REQUEST HAS BEEN RECEIVED FROM USER
+        requestRef.child(userID).child(mUser.getUid()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    if (snapshot.child("status").getValue().toString().equals("pending")) {
+                        CurrentState = "they_sent_pending";
+                        btnPerform.setText("Accept");
+                        btnDecline.setVisibility(View.VISIBLE);
+                        btnDecline.setText("Decline");
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        if (CurrentState.equals("nothing_happened")) {
+            CurrentState = "nothing_happened";
+            btnPerform.setText("Send Request");
+            btnDecline.setVisibility(View.GONE);
+        }
     }
 
     private void LoadUser() {
@@ -98,11 +230,9 @@ public class ViewFriendActivity extends AppCompatActivity {
         if (CurrentState.equals("nothing_happened")) {
             HashMap hashmap = new HashMap();
             hashmap.put("status", "pending");
-
             requestRef.child(mUser.getUid()).child(userID).updateChildren(hashmap).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Toast.makeText(ViewFriendActivity.this, "Friend request sent", Toast.LENGTH_SHORT).show();
-                    btnDecline.setVisibility(View.GONE);
                     CurrentState = "I_sent_pending";
                     btnPerform.setText("Cancel Request");
                 } else {
@@ -126,10 +256,10 @@ public class ViewFriendActivity extends AppCompatActivity {
         }
 
         if (CurrentState.equals("they_sent_pending")) {
-            requestRef.child(mUser.getUid()).child(userID).removeValue().addOnCompleteListener(task -> {
+            requestRef.child(userID).child(mUser.getUid()).removeValue().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     HashMap hashMap = new HashMap();
-                    hashMap.put("status", "friend");
+                    hashMap.put("status", "friends");
                     hashMap.put("username", username);
                     hashMap.put("profileImageUrl", profileImageURL);
 
@@ -152,7 +282,11 @@ public class ViewFriendActivity extends AppCompatActivity {
             });
         }
         if (CurrentState.equals("friends")) {
-            //
+            CurrentState = "friends";
+            btnPerform.setText("Send Message");
+            btnDecline.setText("Remove Friend");
+            btnDecline.setVisibility(View.VISIBLE);
+
         }
     }
 
