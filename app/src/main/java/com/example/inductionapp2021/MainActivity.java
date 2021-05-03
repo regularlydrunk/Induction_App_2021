@@ -396,7 +396,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.logout:
-                Toast.makeText(this, "Log Out", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Log Out", Toast.LENGTH_SHORT).show();
+                mAuth.signOut();
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+
                 break;
         }
 

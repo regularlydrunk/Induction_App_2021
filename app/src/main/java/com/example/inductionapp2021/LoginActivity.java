@@ -48,11 +48,11 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        btnLogin.setOnClickListener(view -> AttemptLogin());
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AttemptLogin();
-
+                startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
             }
         });
     }
@@ -62,29 +62,32 @@ public class LoginActivity extends AppCompatActivity {
         String password = inputPassword.getEditText().getText().toString();
 
 
-        if (email.isEmpty() || !email.contains("@mmu.ac.uk")) //Filters so only MMU emails can register
+        if (email.isEmpty() || !email.contains("mmu.ac.uk")) //Filters so only MMU emails can register
         {
+            Toast.makeText(this, "Email is not valid", Toast.LENGTH_SHORT).show();
             showError(inputEmail, "Email is not valid"); //If email doesn't match error is thrown
         } else if (password.isEmpty() || password.length() < 6) {
+
             showError(inputPassword, "Password must be greater than 6 characters");
         } else {
             mLoadingBar.setTitle("Login");
             mLoadingBar.setMessage("Please wait while we check your credentials");
             mLoadingBar.setCanceledOnTouchOutside(false);
             mLoadingBar.show();
+
             mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
                         mLoadingBar.dismiss();
                         Toast.makeText(LoginActivity.this, "Login is complete.", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(LoginActivity.this, SetupActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         finish();
                     } else {
                         mLoadingBar.dismiss();
-                        Toast.makeText(LoginActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Credentials are not valid. Please try again.", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
