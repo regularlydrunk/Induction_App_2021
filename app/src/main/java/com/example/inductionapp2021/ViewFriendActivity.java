@@ -75,7 +75,6 @@ public class ViewFriendActivity extends AppCompatActivity {
 
     private void Unfriend(String userID) {
         if (CurrentState.equals("friends")) {
-
             friendRef.child(userID).child(mUser.getUid()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
@@ -87,8 +86,8 @@ public class ViewFriendActivity extends AppCompatActivity {
                                     Toast.makeText(ViewFriendActivity.this, "User Unfriended", Toast.LENGTH_SHORT).show();
                                     CurrentState = "nothing_happened";
                                     btnPerform.setText("Send Request");
+                                    btnPerform.setVisibility(View.VISIBLE);
                                     btnDecline.setVisibility(View.GONE);
-                                    btnPerform.setVisibility(View.GONE);
                                 }
                             }
                         });
@@ -118,7 +117,7 @@ public class ViewFriendActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    CurrentState = "friend";
+                    CurrentState = "friends";
                     btnPerform.setText("Send Message");
                     btnDecline.setVisibility(View.VISIBLE);
                     btnDecline.setText("Remove Friend");
@@ -136,7 +135,7 @@ public class ViewFriendActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    CurrentState = "friend";
+                    CurrentState = "friends";
                     btnPerform.setText("Send Message");
                     btnDecline.setVisibility(View.VISIBLE);
                     btnDecline.setText("Remove Friend");

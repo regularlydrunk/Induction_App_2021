@@ -3,7 +3,10 @@ package com.example.inductionapp2021;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 public class ImageViewActivity extends AppCompatActivity {
     ImageView imageView;
@@ -13,7 +16,10 @@ public class ImageViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_view);
         imageView = findViewById(R.id.imageView);
-        
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_FULLSCREEN  ); //Remove status bar
+
+String url = getIntent().getStringExtra("url");
+        Picasso.get().load(url).into(imageView);
 
     }
 }
