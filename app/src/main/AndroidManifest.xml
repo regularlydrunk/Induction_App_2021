@@ -9,7 +9,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.InductionApp2021">
-        <activity android:name=".ImageViewActivity"></activity>
+        <activity android:name=".ChatUsersActivity"></activity>
+        <activity android:name=".FriendActivity" />
+        <activity android:name=".ChatActivity" />
+        <activity android:name=".ImageViewActivity" />
         <activity android:name=".ForgotPasswordActivity" />
         <activity android:name=".ViewFriendActivity" />
         <activity android:name=".FindFriendActivity" />

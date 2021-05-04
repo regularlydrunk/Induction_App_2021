@@ -3,6 +3,7 @@ package com.example.inductionapp2021;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -35,14 +36,14 @@ public class ViewFriendActivity extends AppCompatActivity {
     TextView Username, Course;
     Button btnPerform, btnDecline;
     String CurrentState = "nothing_happened";
-
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_friend);
 
-        final String userID = getIntent().getStringExtra("userKey");
+        userID = getIntent().getStringExtra("userKey");
 
         mUserRef = FirebaseDatabase.getInstance().getReference().child("Users").child(userID);
         requestRef = FirebaseDatabase.getInstance().getReference().child("Requests");
@@ -261,6 +262,8 @@ public class ViewFriendActivity extends AppCompatActivity {
                     hashMap.put("status", "friends");
                     hashMap.put("username", username);
                     hashMap.put("profileImageUrl", profileImageURL);
+                    hashMap.put("course", course);
+
 
                     friendRef.child(mUser.getUid()).child(userID).updateChildren(hashMap).addOnCompleteListener(task1 -> {
                         if (task1.isSuccessful()) {
@@ -281,10 +284,15 @@ public class ViewFriendActivity extends AppCompatActivity {
             });
         }
         if (CurrentState.equals("friends")) {
-            CurrentState = "friends";
-            btnPerform.setText("Send Message");
-            btnDecline.setText("Remove Friend");
-            btnDecline.setVisibility(View.VISIBLE);
+            btnPerform.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(ViewFriendActivity.this, ChatActivity.class);
+                    intent.putExtra("OtherUserID", userID);
+                    startActivity(intent);
+                }
+            });
+
 
         }
     }

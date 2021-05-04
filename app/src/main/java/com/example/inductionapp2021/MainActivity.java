@@ -392,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.friends:
-                Toast.makeText(this, "Friends", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, FriendActivity.class));
                 break;
 
             case R.id.findFriend:
@@ -401,7 +401,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
 
             case R.id.chat:
-                Toast.makeText(this, "Chat", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, ChatUsersActivity.class));
                 break;
 
             case R.id.logout:
