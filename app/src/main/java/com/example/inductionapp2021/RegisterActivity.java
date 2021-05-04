@@ -62,7 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
         String password = inputPassword.getEditText().getText().toString();
         String confirmPassword = inputConfirmPassword.getEditText().getText().toString();
 
-        if (email.isEmpty() || !email.contains("@mmu.ac.uk")) //Filters so only MMU emails can register
+        if (email.isEmpty() || !email.contains("mmu.ac.uk")) //Filters so only MMU emails can register
         {
             showError(inputEmail, "Email is not valid"); //If email doesn't match error is thrown
         } else if (password.isEmpty() || password.length() < 6) {
